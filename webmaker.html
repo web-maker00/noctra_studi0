@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网页制作展示</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#111;
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:20px;
+  box-sizing:border-box;
+}
+
+/* 回主页按钮 */
+.home-btn{
+  position:fixed;
+  top:20px;
+  left:20px;
+  padding:8px 15px;
+  font-size:14px;
+  border:none;
+  border-radius:6px;
+  background:#ff9e57;
+  color:#000;
+  cursor:pointer;
+  transition:0.3s;
+  z-index:2;
+}
+.home-btn:hover{
+  background:#ffb27a;
+}
+
+/* 页面主标题 */
+h1{
+  margin-top:60px;
+  margin-bottom:40px;
+  color:#ff9e57;
+}
+
+/* 网页示例容器 */
+.web-example{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  max-width:800px;
+  width:100%;
+  margin-bottom:40px;
+}
+
+/* 小标题 */
+.web-title{
+  font-size:24px;
+  color:#fff;
+  margin-bottom:20px;
+  border-bottom:2px solid #fff;
+  padding-bottom:5px;
+}
+
+/* 按钮 */
+.web-btn{
+  padding:10px 20px;
+  font-size:16px;
+  border:none;
+  border-radius:12px;
+  background:#57a1ff;
+  color:#fff;
+  cursor:pointer;
+  transition:0.3s;
+  margin-bottom:20px;
+  text-decoration:none;
+  display:inline-block;
+}
+.web-btn:hover{
+  background:#7eb5ff;
+  transform:scale(1.03);
+}
+
+/* 图片+文字模块 */
+.image-box{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+
+.image-box img{
+  width:100%;
+  max-width:300px;
+  border-radius:8px;
+  box-shadow:0 0 10px rgba(0,0,0,0.5);
+  margin-bottom:10px;
+}
+
+.caption{
+  font-size:14px;
+  color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 回主页 -->
+<button class="home-btn" onclick="location.href='first.html'">回到主页</button>
+
+<h1>网页制作示例</h1>
+
+<!-- 示例1 -->
+<div class="web-example">
+  <div class="web-title">告白网页</div>
+
+  <a class="web-btn" href="love.html">网站例子</a>
+
+  <div class="image-box">
+    <img src="webmaker-img1.jpg" alt="网页例图">
+    <div class="caption">这是一款浪漫星空告白网页（文字可自定义）</div>
+  </div>
+</div>
+
+</body>
+</html>

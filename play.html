@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暮尘工作室</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  color:#fff;
+  background:url('bg.jpg') no-repeat;
+  background-size: cover;
+  background-position: 30% center;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter: blur(1px);
+  z-index:-1;
+}
+
+/* ⭐ 回到首页按钮（统一版） */
+.home-btn{
+  position:fixed;
+  top:15px;
+  left:15px;
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  background:#ff9e57;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:999;
+  transition:0.3s;
+}
+.home-btn:hover{
+  background:#ffb27a;
+  transform:scale(1.05);
+}
+
+/* header */
+header{
+  text-align:center;
+  padding:15px;
+  background:#0a0a0a;
+}
+
+header h1{
+  margin:0;
+  color:#ff9e57;
+}
+
+.subtitle{
+  text-align:center;
+  padding:30px;
+  font-size:22px;
+  background:linear-gradient(135deg,#1a1a1a,#3a2a1f);
+}
+
+.container{
+  padding:15px;
+}
+
+h2{
+  color:#ff9e57;
+}
+
+.card{
+  background:#0f1118;
+  border-radius:12px;
+  padding:15px;
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+button{
+  background:#ff9e57;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* 下单页面 */
+.order-page{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#05070d;
+  display:none;
+  flex-direction:column;
+  padding:20px;
+}
+
+input,select{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:6px;
+  background:#111;
+  color:#fff;
+}
+
+.tip{
+  font-size:12px;
+  color:#aaa;
+}
+
+.price{
+  margin-top:10px;
+  font-size:18px;
+  color:#ff9e57;
+}
+
+.order-page button{
+  margin-top:15px;
+}
+
+/* 成功动画 */
+.success{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#000;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  font-size:24px;
+  color:#ffb27a;
+  animation:fadeIn 0.5s;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ⭐ 回到首页 -->
+<button class="home-btn" onclick="goHome()">回到首页</button>
+
+<header>
+<h1>暮尘工作室</h1>
+</header>
+
+<div class="subtitle">沉于尘，胜于局</div>
+
+<div class="container">
+<h2>护航</h2>
+<div class="card">300万 RM15 <button onclick="order('护航',15)">下单</button></div>
+<div class="card">500万 RM20 <button onclick="order('护航',20)">下单</button></div>
+<div class="card">800万 RM25 <button onclick="order('护航',25)">下单</button></div>
+<div class="card">1000万 RM30 <button onclick="order('护航',30)">下单</button></div>
+
+<h2>陪玩</h2>
+<div class="card">1小时 RM15 <button onclick="order('陪玩',15)">下单</button></div>
+
+<h2>指定单</h2>
+<div class="card">大红 RM5 <button onclick="order('大红',5)">下单</button></div>
+<div class="card">小红 RM3 <button onclick="order('小红',3)">下单</button></div>
+<div class="card">指定红 RM5 <button onclick="order('指定红',5)">下单</button></div>
+<div class="card">大+小红 <button onclick="order('大小红',0)">下单</button></div>
+</div>
+
+<!-- 下单页 -->
+<div class="order-page" id="orderPage">
+<h3>填写订单</h3>
+
+<div id="extra"></div>
+<div class="price" id="price">总价: RM0</div>
+<input type="text" id="remark" placeholder="备注">
+
+<button onclick="submitOrder()">确认下单</button>
+<button onclick="closePage()">返回</button>
+</div>
+
+<!-- 成功页 -->
+<div class="success" id="success">
+  <div>✅ 下单成功</div>
+  <div style="font-size:14px;margin-top:10px;">正在跳转 WhatsApp...</div>
+</div>
+
+<script>
+let type="",basePrice=0,total=0;
+
+/* 回首页 */
+function goHome(){
+  window.location.href = "first.html";
+}
+
+function order(t,price){
+  type=t;
+  basePrice=price;
+  total=price;
+
+  document.getElementById("orderPage").style.display="flex";
+  document.getElementById("price").innerText="总价: RM"+total;
+
+  let extra=document.getElementById("extra");
+  extra.innerHTML="";
+  document.getElementById("remark").value="";
+
+  if(t==="陪玩"){
+    extra.innerHTML=`<select id="mode">
+    <option>娱乐陪</option>
+    <option>技术陪</option></select>`;
+  }
+
+  if(t==="大红"||t==="小红"||t==="指定红"){
+    extra.innerHTML=`
+      <input id="name" placeholder="填写名称">
+      <div class="tip">*可以全称或简写</div>
+    `;
+  }
+
+  if(t==="大小红"){
+    extra.innerHTML=`
+      <input type="number" id="big" placeholder="大红数量" oninput="calc()">
+      <input type="number" id="small" placeholder="小红数量" oninput="calc()">
+    `;
+  }
+}
+
+function calc(){
+  let b=parseInt(document.getElementById("big").value)||0;
+  let s=parseInt(document.getElementById("small").value)||0;
+  total=b*5+s*3;
+  document.getElementById("price").innerText="总价: RM"+total;
+}
+
+function closePage(){
+  document.getElementById("orderPage").style.display="none";
+}
+
+function submitOrder(){
+  let msgLines = [`订单:${type}`, `价格:RM${total}`];
+
+  if(type==="陪玩"){
+    msgLines.push("类型:" + document.getElementById("mode").value);
+  }
+
+  if(type==="大红"||type==="小红"||type==="指定红"){
+    msgLines.push("名称:" + document.getElementById("name").value);
+  }
+
+  if(type==="大小红"){
+    let b=parseInt(document.getElementById("big").value)||0;
+    let s=parseInt(document.getElementById("small").value)||0;
+    if(b+s>5){
+      alert("总数不能超过5！");
+      return;
+    }
+    msgLines.push(`大红:${b} 小红:${s}`);
+  }
+
+  let remarkVal = document.getElementById("remark").value.trim();
+  if(remarkVal !== ""){
+    msgLines.push("备注:" + remarkVal);
+  }
+
+  let msg = msgLines.join("\n");
+
+  document.getElementById("success").style.display="flex";
+
+  setTimeout(()=>{
+    window.location.href="https://wa.me/60187838858?text="+encodeURIComponent(msg);
+  },1500);
+}
+</script>
+
+</body>
+</html>

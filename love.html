@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星夜告白</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+  font-family:Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  cursor:pointer;
+}
+
+/* 星空 canvas */
+#stars{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  z-index:0;
+}
+
+/* 打字文字容器 */
+.container{
+  z-index:2;
+  max-width:80%;
+  opacity:0;
+  transition:1s;
+}
+
+.show{
+  opacity:1;
+}
+
+.text{
+  font-size:22px;
+  line-height:1.6;
+  white-space:pre-line;
+}
+
+.love{
+  font-size:32px;
+  margin-top:30px;
+  color:#ff6b81;
+  opacity:0;
+  transition:1s;
+}
+
+/* 提示点击 */
+.hint{
+  position:absolute;
+  bottom:40px;
+  font-size:14px;
+  color:#aaa;
+  animation:blink 1.5s infinite;
+}
+
+@keyframes blink{
+  0%,100%{opacity:0.3;}
+  50%{opacity:1;}
+}
+</style>
+</head>
+
+<body onclick="startTyping()">
+
+<canvas id="stars"></canvas>
+
+<div class="container" id="content">
+  <div class="text" id="text"></div>
+  <div class="love" id="love">我喜欢你 ❤️</div>
+</div>
+
+<div class="hint" id="hint">轻轻点击空白处…</div>
+
+<script>
+// ⭐ 星空动画（明显移动 + 闪烁）
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+
+let w = canvas.width;
+let h = canvas.height;
+
+// 星星数组
+let stars = [];
+const starCount = 250;
+for(let i=0;i<starCount;i++){
+  stars.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    radius: Math.random()*1.5 + 0.5,
+    speed: Math.random()*0.3 + 0.1, // ⭐ 移动明显
+    alpha: Math.random()*0.5 + 0.5,  // ⭐ 初始亮度
+    delta: Math.random()*0.02 + 0.01 // ⭐ 闪烁幅度
+  });
+}
+
+function drawStars(){
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0,0,w,h);
+
+  for(let s of stars){
+    // 星星移动
+    s.y -= s.speed;
+    if(s.y < 0) s.y = h;
+
+    // 星星闪烁
+    s.alpha += s.delta;
+    if(s.alpha >=1 || s.alpha <=0.2) s.delta *= -1;
+
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+    ctx.fill();
+  }
+
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// 自适应屏幕
+window.onresize = () => {
+  resizeCanvas();
+  w = canvas.width;
+  h = canvas.height;
+  for(let s of stars){
+    s.x = Math.random()*w;
+    s.y = Math.random()*h;
+  }
+};
+
+// 🖱 点击触发打字
+const message = 
+`从认识你的那一天开始，
+世界慢慢变得不一样了。
+
+我开始期待每一次聊天，
+期待每一次见面。
+
+也许我不完美，
+但我对你的喜欢，很认真。`;
+
+let i = 0;
+let started = false;
+
+function startTyping(){
+  if(started) return;
+  started = true;
+
+  document.getElementById("content").classList.add("show");
+  document.getElementById("hint").style.display = "none";
+
+  typeWriter();
+}
+
+function typeWriter(){
+  if(i < message.length){
+    document.getElementById("text").innerHTML += message.charAt(i);
+    i++;
+    setTimeout(typeWriter, 60);
+  }else{
+    document.getElementById("love").style.opacity = 1;
+  }
+}
+</script>
+
+</body>
+</html>
